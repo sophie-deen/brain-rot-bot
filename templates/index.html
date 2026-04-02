@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BRAIN ROT BOT // BRAD</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #0a0a0a;
+      --blue: #0047FF;
+      --blue-light: #f0f4ff;
+      --blue-mid: #d0deff;
+      --dim: #777777;
+      --border: #0a0a0a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', Courier, monospace;
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ── LAYOUT ── */
+    .page { max-width: 640px; margin: 0 auto; }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 4rem 0 5rem;
+    }
+
+    .brad-ascii {
+      color: var(--blue);
+      white-space: pre;
+      font-size: clamp(0.4rem, 1.5vw, 0.7rem);
+      line-height: 1.2;
+      display: inline-block;
+      text-shadow: 2px 2px 0px #d0deff;
+    }
+
+    .hero-sub {
+      margin-top: 1.25rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--dim);
+    }
+
+    .hero-tag {
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      letter-spacing: -0.01em;
+      margin-top: 2rem;
+      font-weight: bold;
+      line-height: 1.2;
+    }
+
+    /* ── SKELETON ── */
+    .skeleton-wrap {
+      text-align: center;
+      margin: 2rem 0;
+    }
+
+    .skeleton-art {
+      white-space: pre;
+      display: inline-block;
+      font-size: clamp(0.7rem, 2vw, 0.9rem);
+      line-height: 1.4;
+      color: var(--text);
+    }
+
+    .skeleton-label {
+      font-size: 0.7rem;
+      color: var(--dim);
+      letter-spacing: 0.2em;
+      margin-top: 0.5rem;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      color: var(--blue);
+      margin-bottom: 1.25rem;
+      display: block;
+    }
+
+    .section-heading {
+      font-size: clamp(1.4rem, 4.5vw, 2.2rem);
+      font-weight: bold;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+      line-height: 1.15;
+    }
+
+    /* ── VIBE CHECK ── */
+    .vibe-section {
+      margin-bottom: 4rem;
+    }
+
+    .vibe-q {
+      margin-bottom: 2.5rem;
+    }
+
+    .vibe-q-text {
+      font-size: 1rem;
+      letter-spacing: 0.01em;
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+
+    .vibe-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .vibe-opt {
+      border: 1px solid #ddd;
+      padding: 0.6rem 1rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text);
+      letter-spacing: 0.02em;
+      transition: all 0.1s;
+      user-select: none;
+      text-align: left;
+    }
+
+    .vibe-opt:hover { background: var(--blue-light); border-color: var(--blue); }
+    .vibe-opt.selected {
+      background: var(--blue);
+      color: #ffffff;
+      border-color: var(--blue);
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 2rem 0;
+    }
+
+    /* ── CALL BOX ── */
+    .call-box {
+      border: 2px solid var(--text);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      position: relative;
+      background: var(--blue-light);
+    }
+
+    .call-box-label {
+      position: absolute;
+      top: -0.75rem;
+      left: 1.5rem;
+      background: var(--blue-light);
+      padding: 0 0.5rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--blue);
+    }
+
+    .call-inner {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    .phone-art {
+      white-space: pre;
+      font-size: 0.75rem;
+      line-height: 1.4;
+      color: var(--text);
+      flex-shrink: 0;
+    }
+
+    .call-text { flex: 1; }
+
+    .call-text p {
+      font-size: 0.8rem;
+      line-height: 1.6;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    /* ── BUTTON ── */
+    .btn-primary {
+      background: var(--blue);
+      border: 2px solid var(--blue);
+      color: #ffffff;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      letter-spacing: 0.15em;
+      width: 100%;
+      transition: all 0.1s;
+      display: block;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--text);
+      border-color: var(--text);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .btn-end {
+      background: transparent;
+      border: 2px solid var(--text);
+      color: var(--text);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      padding: 0.6rem 1.5rem;
+      cursor: pointer;
+      letter-spacing: 0.1em;
+      width: 100%;
+      display: none;
+      margin-top: 0.5rem;
+    }
+
+    .btn-end:hover { background: #fee; border-color: #c00; color: #c00; }
+
+    /* ── STATUS ── */
+    #status-line {
+      font-size: 0.75rem;
+      color: var(--dim);
+      text-align: center;
+      min-height: 1.2rem;
+      margin: 0.75rem 0 0.5rem;
+      letter-spacing: 0.05em;
+    }
+
+    .mic-indicator {
+      display: none;
+      text-align: center;
+      font-size: 0.8rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.1em;
+    }
+
+    .mic-indicator.speaking { color: var(--blue); }
+    .mic-indicator.listening { color: var(--text); }
+
+    /* ── STEPS ── */
+    .steps {
+      margin-bottom: 4rem;
+    }
+
+    .step {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 1rem 0;
+      border-bottom: 1px solid #eee;
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+
+    .step-num {
+      color: var(--blue);
+      font-weight: bold;
+      flex-shrink: 0;
+      width: 1.5rem;
+    }
+
+    /* ── DISCLAIMER ── */
+    .disclaimer {
+      font-size: 0.7rem;
+      color: var(--dim);
+      text-align: center;
+      border-top: 1px solid #eee;
+      padding-top: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .blink { animation: blink 1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="brad-ascii">
+██████╗ ██████╗  █████╗ ██████╗
+██╔══██╗██╔══██╗██╔══██╗██╔══██╗
+██████╔╝██████╔╝███████║██║  ██║
+██╔══██╗██╔══██╗██╔══██║██║  ██║
+██████╔╝██║  ██║██║  ██║██████╔╝
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝</div>
+    <div class="hero-sub">BRAIN ROT ASSESSMENT DIVISION // EST. 2026</div>
+    <div class="hero-tag">Is using AI making you thick?</div>
+  </div>
+
+  <!-- VIBE CHECK -->
+  <div class="call-box" style="margin-bottom: 3rem;">
+    <span class="call-box-label">// PRE-ASSESSMENT VIBE CHECK</span>
+    <div class="section-heading" style="margin-bottom: 1.5rem;">Before we begin.</div>
+
+    <div class="vibe-q">
+      <div class="vibe-q-text">Do you think you're getting more stupid?</div>
+      <div class="vibe-options">
+        <button class="vibe-opt" onclick="pick(this)">Yes, definitely</button>
+        <button class="vibe-opt" onclick="pick(this)">A bit, maybe</button>
+        <button class="vibe-opt" onclick="pick(this)">Absolutely not</button>
+        <button class="vibe-opt" onclick="pick(this)">What does stupid mean?</button>
+      </div>
+    </div>
+
+    <div class="vibe-q">
+      <div class="vibe-q-text">How much is AI doing your thinking for you?</div>
+      <div class="vibe-options">
+        <button class="vibe-opt" onclick="pick(this)">Most of it</button>
+        <button class="vibe-opt" onclick="pick(this)">Just the hard bits</button>
+        <button class="vibe-opt" onclick="pick(this)">Barely</button>
+        <button class="vibe-opt" onclick="pick(this)">What's AI?</button>
+      </div>
+    </div>
+
+    <div class="vibe-q">
+      <div class="vibe-q-text">When did you last read a whole book?</div>
+      <div class="vibe-options">
+        <button class="vibe-opt" onclick="pick(this)">This year</button>
+        <button class="vibe-opt" onclick="pick(this)">Obama was president</button>
+        <button class="vibe-opt" onclick="pick(this)">I read summaries</button>
+        <button class="vibe-opt" onclick="pick(this)">Define "read"</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="call-box" style="margin-bottom: 3rem; background: #ffffff;">
+    <span class="call-box-label" style="background: #ffffff;">// HOW IT WORKS</span>
+    <div class="section-heading" style="margin-bottom: 1.5rem;">Three steps.</div>
+    <div class="step"><span class="step-num">01</span><span>Click the button. Allow microphone access.</span></div>
+    <div class="step"><span class="step-num">02</span><span>Dr. Axon Daley talks to you. About two minutes — longer if she has concerns. She will not tell you how you're doing.</span></div>
+    <div class="step"><span class="step-num">03</span><span>When the call ends, you get your results. Scored across six cognitive competencies. Archived.</span></div>
+  </div>
+
+  <!-- CALL BOX -->
+  <div class="call-box">
+    <span class="call-box-label">// INITIATE ASSESSMENT</span>
+    <div class="call-inner">
+      <div class="phone-art">  .-------.
+  |  ___  |
+  | ( ☎ ) |
+  |  ---  |
+  | |   | |
+  | |___| |
+  '-------'
+    |   |
+   /     \
+  (CONNECT)</div>
+      <div class="call-text">
+        <p>Dr. Daley is standing by.</p>
+
+        <div id="status-line">[READY]<span class="blink">_</span></div>
+        <div class="mic-indicator" id="mic-indicator">● DR. DALEY IS <span id="mode-text">CONNECTING</span><span class="blink">_</span></div>
+
+        <button class="btn-primary" id="begin-btn">[ BEGIN ASSESSMENT ]</button>
+        <button class="btn-end" id="end-btn">[ END CALL ]</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- METHODOLOGY -->
+  <div class="call-box" style="margin-bottom: 3rem; background: var(--blue-light);">
+    <span class="call-box-label" style="background: var(--blue-light);">// WHAT THIS IS BASED ON</span>
+    <div class="section-heading" style="margin-bottom: 1.5rem;">This is credible af.</div>
+
+    <div class="step">
+      <span class="step-num">01</span>
+      <span><strong>The Cattell-Horn-Carroll (CHC) framework</strong> — the most comprehensively validated psychometric model of human cognitive ability, used by clinical and educational psychologists worldwide. Your six scores map directly to CHC cognitive strata: fluid intelligence (Gf), crystallised intelligence (Gc), working memory capacity (Gwm), and retrieval fluency (Gr).</span>
+    </div>
+    <div class="step">
+      <span class="step-num">02</span>
+      <span><strong>Peer-reviewed research on AI and cognitive atrophy</strong> — including: Kosmyna et al. (2025) on 55% lower cognitive engagement during AI-assisted tasks; Fan et al. (2025) on metacognitive laziness and the erosion of epistemic self-awareness; Doshi &amp; Hauser (2024) on measurable reductions in creative novelty in AI-assisted groups; Gloria Mark's attention research showing average sustained focus has declined to 47 seconds; and Sparrow et al.'s foundational work on the Google Effect and transactive memory.</span>
+    </div>
+    <div class="step">
+      <span class="step-num">03</span>
+      <span><strong>Conversational cognitive assessment methodology</strong> — designed so that competencies reveal themselves through natural speech patterns rather than self-report. You cannot perform your way through a working memory task. You cannot fake fluid reasoning under real-time pressure. The format is intentional.</span>
+    </div>
+    <div class="step" style="border-bottom: none;">
+      <span class="step-num" style="color: var(--text);">04</span>
+      <span><strong>Common fucking sense.</strong> If you've noticed your attention span has shortened, your recall has got worse, and you reach for a chatbot before you reach for your own brain — you already know something is happening. We just measure it. We spoke to your mum. She agrees.</span>
+    </div>
+  </div>
+
+  <br>
+
+  <!-- DISCLAIMER -->
+  <p class="disclaimer">
+    Your results are not medical advice.<br><br>
+    <span style="color: #bbb; font-size: 0.65rem;">BRAD // BRAIN ROT ASSESSMENT DIVISION // REGISTERED WITH NOBODY IN PARTICULAR</span>
+  </p>
+
+</div>
+
+<script>
+  // Vibe check — purely decorative
+  function pick(el) {
+    const group = el.closest('.vibe-options');
+    group.querySelectorAll('.vibe-opt').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+</script>
+
+<script type="module">
+  import { Conversation } from 'https://esm.sh/@11labs/client';
+
+  const AGENT_ID = "{{ agent_id }}";
+  const beginBtn = document.getElementById('begin-btn');
+  const endBtn = document.getElementById('end-btn');
+  const statusLine = document.getElementById('status-line');
+  const micIndicator = document.getElementById('mic-indicator');
+  const modeText = document.getElementById('mode-text');
+
+  let conversation = null;
+  let conversationId = null;
+
+  beginBtn.addEventListener('click', async () => {
+    beginBtn.disabled = true;
+    statusLine.innerHTML = '[REQUESTING MICROPHONE ACCESS...]';
+
+    try {
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (e) {
+      statusLine.textContent = '[ERROR: MICROPHONE ACCESS DENIED]';
+      beginBtn.disabled = false;
+      return;
+    }
+
+    statusLine.textContent = '[CONNECTING TO DR. DALEY...]';
+
+    try {
+      conversation = await Conversation.startSession({
+        agentId: AGENT_ID,
+
+        onConnect: ({ conversationId: cid }) => {
+          conversationId = cid;
+          statusLine.textContent = '[CONNECTED — CALL IN PROGRESS]';
+          beginBtn.style.display = 'none';
+          endBtn.style.display = 'block';
+          micIndicator.style.display = 'block';
+        },
+
+        onDisconnect: () => {
+          statusLine.textContent = '[CALL ENDED — PROCESSING RESULTS...]';
+          endBtn.style.display = 'none';
+          micIndicator.style.display = 'none';
+          if (conversationId) {
+            window.location.href = `/results/${conversationId}`;
+          } else {
+            statusLine.textContent = '[ERROR: NO SESSION — REFRESH AND TRY AGAIN]';
+            beginBtn.style.display = 'block';
+            beginBtn.disabled = false;
+          }
+        },
+
+        onModeChange: ({ mode }) => {
+          if (mode.mode === 'speaking') {
+            modeText.textContent = 'SPEAKING';
+            micIndicator.className = 'mic-indicator speaking';
+          } else {
+            modeText.textContent = 'LISTENING';
+            micIndicator.className = 'mic-indicator listening';
+          }
+        },
+
+        onError: (error) => {
+          console.error('ElevenLabs error:', error);
+          statusLine.textContent = '[ERROR: ' + (error.message || 'CONNECTION FAILED') + ']';
+          beginBtn.style.display = 'block';
+          beginBtn.disabled = false;
+          endBtn.style.display = 'none';
+        },
+      });
+
+    } catch (e) {
+      console.error(e);
+      statusLine.textContent = '[FAILED TO START — CHECK CONSOLE]';
+      beginBtn.disabled = false;
+    }
+  });
+
+  endBtn.addEventListener('click', async () => {
+    if (conversation) {
+      endBtn.disabled = true;
+      await conversation.endSession();
+    }
+  });
+</script>
+</body>
+</html>

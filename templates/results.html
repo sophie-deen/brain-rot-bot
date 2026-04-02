@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BRAIN ROT BOT // RESULTS</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #ffffff;
+      --text: #0a0a0a;
+      --border: #0a0a0a;
+      --blue: #0047FF;
+      --blue-light: #f0f4ff;
+      --dim: #777777;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', Courier, monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 2rem;
+    }
+
+    .terminal {
+      max-width: 640px;
+      width: 100%;
+    }
+
+    .box {
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .box-title {
+      position: absolute;
+      top: -0.7rem;
+      left: 1rem;
+      background: var(--bg);
+      padding: 0 0.5rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--blue);
+    }
+
+    .pre-text {
+      white-space: pre;
+      font-size: clamp(0.7rem, 2vw, 0.85rem);
+      line-height: 1.8;
+    }
+
+    .dim { color: var(--dim); }
+    .amber { color: var(--blue); }
+    .red { color: var(--blue); }
+    .green { color: var(--text); }
+
+    /* Waiting state */
+    .waiting-msg {
+      text-align: center;
+      padding: 3rem 0;
+    }
+
+    .spinner {
+      font-size: 1.5rem;
+      display: block;
+      margin-bottom: 1rem;
+      animation: spin-chars 0.5s steps(4) infinite;
+    }
+
+    @keyframes spin-chars {
+      0%   { content: '[/]'; }
+    }
+
+    .blink {
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .btn {
+      background: var(--blue);
+      border: 2px solid var(--blue);
+      color: #ffffff;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      padding: 0.6rem 1.5rem;
+      cursor: pointer;
+      letter-spacing: 0.1em;
+      margin-top: 1rem;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background: var(--text);
+      border-color: var(--text);
+      color: #ffffff;
+    }
+
+    .score-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin: 0.2rem 0;
+    }
+
+    .score-label {
+      width: 20ch;
+      flex-shrink: 0;
+    }
+
+    .score-bar {
+      letter-spacing: -0.05em;
+      color: var(--blue);
+    }
+
+    .score-num {
+      color: var(--text);
+    }
+
+    .archetype-name {
+      font-size: clamp(1rem, 3vw, 1.3rem);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.25rem;
+      color: var(--blue);
+    }
+
+    .archetype-tagline {
+      color: var(--dim);
+      font-size: 0.8rem;
+    }
+
+    .overall-score {
+      font-size: clamp(1.5rem, 5vw, 2.5rem);
+      letter-spacing: 0.05em;
+      color: var(--blue);
+    }
+
+    .brain-art {
+      color: {% if status == 'ready' %}
+        {% if report.ascii_brain_state == 'healthy' %}#111111
+        {% elif report.ascii_brain_state == 'moderate' %}#ff6b00
+        {% else %}#ff2d78
+        {% endif %}
+      {% else %}#111111{% endif %};
+      white-space: pre;
+      line-height: 1.4;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+<div class="terminal">
+
+  <div style="text-align:center; padding: 1.5rem 0 2rem; border-bottom: 2px solid #0a0a0a; margin-bottom: 2rem;">
+    <div style="color:#0047FF; white-space:pre; font-size:clamp(0.35rem,1.2vw,0.6rem); line-height:1.2; display:inline-block; text-shadow: 2px 2px 0px #d0deff;">██████╗ ██████╗  █████╗ ██████╗
+██╔══██╗██╔══██╗██╔══██╗██╔══██╗
+██████╔╝██████╔╝███████║██║  ██║
+██╔══██╗██╔══██╗██╔══██║██║  ██║
+██████╔╝██║  ██║██║  ██║██████╔╝
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝</div>
+    <div style="font-size:0.65rem; letter-spacing:0.3em; color:#777; margin-top:0.5rem;">BRAIN ROT ASSESSMENT DIVISION // PATIENT REPORT</div>
+  </div>
+
+  {% if status == 'waiting' %}
+
+    <div class="box">
+      <span class="box-title">BRAIN ROT ASSESSMENT DIVISION</span>
+      <div class="waiting-msg">
+        <div class="pre-text" id="spinner-chars">[/] FILING RESULTS...</div>
+        <br>
+        <div class="pre-text dim">Dr. Daley is reviewing your responses.<br>This takes approximately 10 seconds.</div>
+        <br>
+        <div class="pre-text amber">Do not refresh. Do not Google anything.<span class="blink">_</span></div>
+      </div>
+    </div>
+
+    <script>
+      const chars = ['[/]', '[-]', '[\\]', '[|]'];
+      let i = 0;
+      const el = document.getElementById('spinner-chars');
+      setInterval(() => {
+        el.textContent = chars[i % 4] + ' FILING RESULTS...';
+        i++;
+      }, 200);
+
+      function poll() {
+        fetch('/status/{{ conversation_id }}')
+          .then(r => r.json())
+          .then(data => {
+            if (data.status === 'ready' || data.status === 'error') {
+              window.location.reload();
+            } else {
+              setTimeout(poll, 2000);
+            }
+          })
+          .catch(() => setTimeout(poll, 3000));
+      }
+      setTimeout(poll, 2000);
+    </script>
+
+  {% elif status == 'error' %}
+
+    <div class="box">
+      <span class="box-title">SYSTEM ERROR</span>
+      <div class="pre-text red">
+[ERROR] ASSESSMENT INCOMPLETE
+
+Dr. Daley was unable to draw full conclusions.
+She has concerns — but not about your cognition.
+About the infrastructure.
+
+Error detail: {{ error }}
+      </div>
+      <a href="/"><button class="btn">[ TRY AGAIN ]</button></a>
+    </div>
+
+  {% elif status == 'ready' %}
+
+    {% set r = report %}
+
+    <div class="box">
+      <span class="box-title">BRAIN ROT ASSESSMENT DIVISION // CONFIDENTIAL</span>
+      <div class="pre-text">
+PATIENT:             {{ r.patient_name | upper }}
+DATE:                {{ r.date }}
+ASSESSING CLINICIAN: DR. A. DALEY
+</div>
+    </div>
+
+    <div class="box">
+      <span class="box-title">OVERALL RESULT</span>
+      <br>
+      <div class="overall-score">{{ r.overall }}/100</div>
+      <br>
+      <div class="archetype-name">{{ r.archetype }}</div>
+      <div class="archetype-tagline">{{ r.archetype_tagline }}</div>
+      <br>
+      <div class="brain-art">{% if r.ascii_brain_state == 'healthy' %}  (\(\
+  ( -.-)
+  o_(")("){% elif r.ascii_brain_state == 'moderate' %}  (\(\
+  ( x.x)
+  o_(")("){% else %}  (\(\
+  ( @.@)
+  o_(")(")  🫠{% endif %}</div>
+    </div>
+
+    <div class="box">
+      <span class="box-title">COMPETENCY BREAKDOWN</span>
+      <br>
+      <div class="score-row">
+        <span class="score-label">Critical reasoning</span>
+        <span class="score-bar">{{ r.bars.critical_reasoning }}</span>
+        <span class="score-num">{{ r.scores.critical_reasoning }}/10</span>
+      </div>
+      <div class="score-row">
+        <span class="score-label">Creative initiation</span>
+        <span class="score-bar">{{ r.bars.creative_initiation }}</span>
+        <span class="score-num">{{ r.scores.creative_initiation }}/10</span>
+      </div>
+      <div class="score-row">
+        <span class="score-label">Epistemic confidence</span>
+        <span class="score-bar">{{ r.bars.epistemic_confidence }}</span>
+        <span class="score-num">{{ r.scores.epistemic_confidence }}/10</span>
+      </div>
+      <div class="score-row">
+        <span class="score-label">Attention depth</span>
+        <span class="score-bar">{{ r.bars.attention_depth }}</span>
+        <span class="score-num">{{ r.scores.attention_depth }}/10</span>
+      </div>
+      <div class="score-row">
+        <span class="score-label">Verbal precision</span>
+        <span class="score-bar">{{ r.bars.verbal_precision }}</span>
+        <span class="score-num">{{ r.scores.verbal_precision }}/10</span>
+      </div>
+      <div class="score-row">
+        <span class="score-label">Working memory</span>
+        <span class="score-bar">{{ r.bars.working_memory }}</span>
+        <span class="score-num">{{ r.scores.working_memory }}/10</span>
+      </div>
+    </div>
+
+    <div class="box">
+      <span class="box-title">DR. DALEY'S CLINICAL NOTES</span>
+      <br>
+      <div class="pre-text" style="white-space: pre-wrap;">{{ r.clinical_notes }}</div>
+    </div>
+
+    <div class="box">
+      <span class="box-title">FIVE-YEAR PROJECTION</span>
+      <div class="pre-text">
+PROJECTED SCORE IN 5 YEARS: <span class="{% if r.five_year_score < 40 %}red{% elif r.five_year_score < 70 %}amber{% else %}green{% endif %}">{{ r.five_year_score }}/100</span>
+
+<span style="white-space: pre-wrap; color: #aaa;">{{ r.five_year_observation }}</span>
+      </div>
+    </div>
+
+    <div class="box">
+      <span class="box-title">RECOMMENDED INTERVENTIONS</span>
+      <div class="pre-text" style="white-space: pre-wrap; color: #ccc;">
+1. {{ r.interventions[0] }}
+
+2. {{ r.interventions[1] }}
+
+3. {{ r.interventions[2] }}
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="pre-text dim" style="text-align: center;">
+NEXT ASSESSMENT: RECOMMENDED IN 3 MONTHS
+DR. DALEY WILL REMEMBER THIS.
+
+    _______
+   /       \
+  | () () |
+   \  ^  /
+    |||||
+    |||||
+
+  [COGNITIVE SCAN COMPLETE]
+  [FILING RESULTS]
+  [DR. DALEY HAS CONCERNS]
+
+— Dr. A. Daley
+  Cognitive Fitness Unit
+  [Registered with nobody in particular]
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <a href="/"><button class="btn">[ ASSESS SOMEONE ELSE ]</button></a>
+    </div>
+
+  {% endif %}
+
+</div>
+</body>
+</html>
