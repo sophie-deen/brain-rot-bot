@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BRAIN ROT BOT // BRAD</title>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #ffffff;
@@ -12,7 +13,6 @@
       --blue-light: #f0f4ff;
       --blue-mid: #d0deff;
       --dim: #777777;
-      --border: #0a0a0a;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -20,21 +20,21 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Courier New', Courier, monospace;
+      font-family: 'Special Elite', 'Courier New', Courier, monospace;
       min-height: 100vh;
-      padding: 2rem 1rem 4rem;
+      padding: 2rem 1rem 5rem;
     }
 
-    /* ── LAYOUT ── */
     .page { max-width: 640px; margin: 0 auto; }
 
     /* ── HERO ── */
     .hero {
       text-align: center;
-      padding: 4rem 0 5rem;
+      padding: 4rem 0 3rem;
     }
 
     .brad-ascii {
+      font-family: 'Courier New', Courier, monospace;
       color: var(--blue);
       white-space: pre;
       font-size: clamp(0.4rem, 1.5vw, 0.7rem);
@@ -44,6 +44,7 @@
     }
 
     .hero-sub {
+      font-family: 'Courier New', Courier, monospace;
       margin-top: 1.25rem;
       font-size: 0.7rem;
       letter-spacing: 0.3em;
@@ -58,95 +59,7 @@
       line-height: 1.2;
     }
 
-    /* ── SKELETON ── */
-    .skeleton-wrap {
-      text-align: center;
-      margin: 2rem 0;
-    }
-
-    .skeleton-art {
-      white-space: pre;
-      display: inline-block;
-      font-size: clamp(0.7rem, 2vw, 0.9rem);
-      line-height: 1.4;
-      color: var(--text);
-    }
-
-    .skeleton-label {
-      font-size: 0.7rem;
-      color: var(--dim);
-      letter-spacing: 0.2em;
-      margin-top: 0.5rem;
-    }
-
-    /* ── SECTION LABEL ── */
-    .section-label {
-      font-size: 0.65rem;
-      letter-spacing: 0.3em;
-      color: var(--blue);
-      margin-bottom: 1.25rem;
-      display: block;
-    }
-
-    .section-heading {
-      font-size: clamp(1.4rem, 4.5vw, 2.2rem);
-      font-weight: bold;
-      letter-spacing: -0.02em;
-      margin-bottom: 2rem;
-      line-height: 1.15;
-    }
-
-    /* ── VIBE CHECK ── */
-    .vibe-section {
-      margin-bottom: 4rem;
-    }
-
-    .vibe-q {
-      margin-bottom: 2.5rem;
-    }
-
-    .vibe-q-text {
-      font-size: 1rem;
-      letter-spacing: 0.01em;
-      margin-bottom: 1rem;
-      font-weight: bold;
-    }
-
-    .vibe-options {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .vibe-opt {
-      border: 1px solid #ddd;
-      padding: 0.6rem 1rem;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 0.85rem;
-      cursor: pointer;
-      background: transparent;
-      color: var(--text);
-      letter-spacing: 0.02em;
-      transition: all 0.1s;
-      user-select: none;
-      text-align: left;
-    }
-
-    .vibe-opt:hover { background: var(--blue-light); border-color: var(--blue); }
-    .vibe-opt.selected {
-      background: var(--blue);
-      color: #ffffff;
-      border-color: var(--blue);
-    }
-
-    /* ── DIVIDER ── */
-    .divider {
-      border: none;
-      border-top: 1px solid #ddd;
-      margin: 2rem 0;
-    }
-
-    /* ── CALL BOX ── */
+    /* ── VIBE CHECK BOX ── */
     .call-box {
       border: 2px solid var(--text);
       padding: 2rem;
@@ -156,6 +69,7 @@
     }
 
     .call-box-label {
+      font-family: 'Courier New', Courier, monospace;
       position: absolute;
       top: -0.75rem;
       left: 1.5rem;
@@ -166,6 +80,143 @@
       color: var(--blue);
     }
 
+    .section-heading {
+      font-size: clamp(1.4rem, 4.5vw, 2.2rem);
+      font-weight: bold;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+      line-height: 1.15;
+    }
+
+    .vibe-q {
+      margin-bottom: 2rem;
+    }
+
+    .vibe-q-text {
+      font-size: 1rem;
+      letter-spacing: 0.01em;
+      margin-bottom: 0.75rem;
+      font-weight: bold;
+    }
+
+    .vibe-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .vibe-opt {
+      border: 1px solid #ccc;
+      padding: 0.5rem 0.9rem;
+      font-family: 'Special Elite', 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text);
+      letter-spacing: 0.02em;
+      transition: all 0.1s;
+      text-align: left;
+    }
+
+    .vibe-opt:hover { background: white; border-color: var(--blue); }
+    .vibe-opt.selected {
+      background: var(--blue);
+      color: #ffffff;
+      border-color: var(--blue);
+    }
+
+    /* ── DIVIDER ── */
+    .ascii-rule {
+      font-family: 'Courier New', Courier, monospace;
+      color: var(--dim);
+      font-size: 0.65rem;
+      margin: 2rem 0;
+      overflow: hidden;
+      white-space: nowrap;
+      opacity: 0.5;
+    }
+
+    /* ── ASCII ART ── */
+    .ascii-art {
+      font-family: 'Courier New', Courier, monospace;
+      text-align: center;
+      color: var(--blue);
+      font-size: 0.72rem;
+      line-height: 1.4;
+      margin: 1rem 0 2rem;
+      white-space: pre;
+      opacity: 0.8;
+    }
+
+    /* ── ASCII ARROW ── */
+    .ascii-arrow {
+      font-family: 'Courier New', Courier, monospace;
+      text-align: center;
+      color: var(--blue);
+      font-size: 0.85rem;
+      line-height: 1.4;
+      margin: 1.5rem 0;
+      white-space: pre;
+      opacity: 0.6;
+    }
+
+    /* ── RETRO BOX (double border) ── */
+    .retro-box {
+      border: 2px double var(--text);
+      padding: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .retro-box-label {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      color: var(--blue);
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .step {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid #eee;
+      font-size: 0.88rem;
+      line-height: 1.65;
+    }
+
+    .step:last-of-type { border-bottom: none; }
+
+    .step-num {
+      font-family: 'Courier New', Courier, monospace;
+      color: var(--blue);
+      font-weight: bold;
+      flex-shrink: 0;
+      width: 1.5rem;
+    }
+
+    /* ── INNER DIVIDER ── */
+    .box-divider {
+      font-family: 'Courier New', Courier, monospace;
+      color: var(--dim);
+      font-size: 0.6rem;
+      margin: 1.5rem 0;
+      overflow: hidden;
+      white-space: nowrap;
+      opacity: 0.4;
+    }
+
+    /* ── CALL SECTION ── */
+    .call-label {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      color: var(--blue);
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
     .call-inner {
       display: flex;
       gap: 2rem;
@@ -173,8 +224,9 @@
     }
 
     .phone-art {
+      font-family: 'Courier New', Courier, monospace;
       white-space: pre;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       line-height: 1.4;
       color: var(--text);
       flex-shrink: 0;
@@ -183,7 +235,7 @@
     .call-text { flex: 1; }
 
     .call-text p {
-      font-size: 0.8rem;
+      font-size: 0.88rem;
       line-height: 1.6;
       color: var(--text);
       margin-bottom: 1rem;
@@ -191,14 +243,14 @@
 
     /* ── BUTTON ── */
     .btn-primary {
+      font-family: 'Special Elite', 'Courier New', Courier, monospace;
       background: var(--blue);
       border: 2px solid var(--blue);
       color: #ffffff;
-      font-family: 'Courier New', Courier, monospace;
       font-size: 0.9rem;
       padding: 0.75rem 1.5rem;
       cursor: pointer;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.1em;
       width: 100%;
       transition: all 0.1s;
       display: block;
@@ -215,14 +267,14 @@
     }
 
     .btn-end {
+      font-family: 'Special Elite', 'Courier New', Courier, monospace;
       background: transparent;
       border: 2px solid var(--text);
       color: var(--text);
-      font-family: 'Courier New', Courier, monospace;
       font-size: 0.85rem;
       padding: 0.6rem 1.5rem;
       cursor: pointer;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.05em;
       width: 100%;
       display: none;
       margin-top: 0.5rem;
@@ -232,6 +284,7 @@
 
     /* ── STATUS ── */
     #status-line {
+      font-family: 'Courier New', Courier, monospace;
       font-size: 0.75rem;
       color: var(--dim);
       text-align: center;
@@ -241,6 +294,7 @@
     }
 
     .mic-indicator {
+      font-family: 'Courier New', Courier, monospace;
       display: none;
       text-align: center;
       font-size: 0.8rem;
@@ -251,30 +305,49 @@
     .mic-indicator.speaking { color: var(--blue); }
     .mic-indicator.listening { color: var(--text); }
 
-    /* ── STEPS ── */
-    .steps {
-      margin-bottom: 4rem;
+    /* ── METHODOLOGY ── */
+    .method-box {
+      border: 2px solid var(--text);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      position: relative;
+      background: var(--blue-light);
     }
 
-    .step {
-      display: flex;
-      gap: 1rem;
-      align-items: flex-start;
-      padding: 1rem 0;
-      border-bottom: 1px solid #eee;
-      font-size: 0.8rem;
-      line-height: 1.6;
-    }
-
-    .step-num {
+    .method-box-label {
+      font-family: 'Courier New', Courier, monospace;
+      position: absolute;
+      top: -0.75rem;
+      left: 1.5rem;
+      background: var(--blue-light);
+      padding: 0 0.5rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
       color: var(--blue);
-      font-weight: bold;
-      flex-shrink: 0;
-      width: 1.5rem;
+    }
+
+    .method-item {
+      padding: 1rem 0;
+      border-bottom: 1px solid #d0deff;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      color: #444;
+    }
+
+    .method-item:last-child { border-bottom: none; }
+
+    .method-item strong {
+      font-family: 'Courier New', Courier, monospace;
+      display: block;
+      color: var(--text);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.6rem;
     }
 
     /* ── DISCLAIMER ── */
     .disclaimer {
+      font-family: 'Courier New', Courier, monospace;
       font-size: 0.7rem;
       color: var(--dim);
       text-align: center;
@@ -328,7 +401,7 @@
       </div>
     </div>
 
-    <div class="vibe-q">
+    <div class="vibe-q" style="margin-bottom: 0;">
       <div class="vibe-q-text">When did you last read a whole book?</div>
       <div class="vibe-options">
         <button class="vibe-opt" onclick="pick(this)">This year</button>
@@ -339,34 +412,53 @@
     </div>
   </div>
 
-  <!-- STEPS -->
-  <div class="call-box" style="margin-bottom: 3rem; background: #ffffff;">
-    <span class="call-box-label" style="background: #ffffff;">// HOW IT WORKS</span>
-    <div class="section-heading" style="margin-bottom: 1.5rem;">Three steps.</div>
-    <div class="step"><span class="step-num">01</span><span>Click the button. Allow microphone access.</span></div>
-    <div class="step"><span class="step-num">02</span><span>Dr. Axon Daley talks to you. About two minutes — longer if she has concerns. She will not tell you how you're doing.</span></div>
-    <div class="step"><span class="step-num">03</span><span>When the call ends, you get your results. Scored across six cognitive competencies. Archived.</span></div>
-  </div>
+  <!-- BRAIN WORM ASCII -->
+  <div class="ascii-art">    _______
+   / . . . \
+  |  _____  |
+  | / ___ \ |~~~~~~~~~~~~~~~~~~~~~~~~~~
+  | \|___|/ |      ~~~> (o)===>
+   \_______/
+  BRAIN ROT DETECTED</div>
 
-  <!-- CALL BOX -->
-  <div class="call-box">
-    <span class="call-box-label">// INITIATE ASSESSMENT</span>
+  <!-- DIVIDER -->
+  <div class="ascii-rule">═══════════════════════════════════════════════════════════════</div>
+
+  <!-- ASCII ARROW -->
+  <div class="ascii-arrow">     |
+     |
+     V</div>
+
+  <!-- HOW IT WORKS + CALL -->
+  <div class="retro-box">
+    <span class="retro-box-label">// HOW IT WORKS</span>
+
+    <div class="step"><span class="step-num">01</span><span>Click the button.</span></div>
+    <div class="step"><span class="step-num">02</span><span>Dr. Axon Daley calls you.</span></div>
+    <div class="step"><span class="step-num">03</span><span>You get your results. Scored across six cognitive competencies. So you know, once and for all, how thick you are now, and how thick you'll be in 6, 12, and 24 months time (that's two years, thicko.)</span></div>
+
+    <div class="box-divider">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</div>
+
+    <span class="call-label">// INITIATE ASSESSMENT</span>
     <div class="call-inner">
-      <div class="phone-art">  .-------.
-  |  ___  |
-  | ( ☎ ) |
-  |  ---  |
-  | |   | |
-  | |___| |
-  '-------'
-    |   |
-   /     \
-  (CONNECT)</div>
+      <div class="phone-art"> _________
+|  _   _  |
+| | |_| | |
+| |     | |
+| | .-, | |
+| |( o )| |
+| | '-' | |
+|  -----  |
+| 1  2  3 |
+| 4  5  6 |
+| 7  8  9 |
+|    0    |
+|_________|</div>
       <div class="call-text">
         <p>Dr. Daley is standing by.</p>
 
         <div id="status-line">[READY]<span class="blink">_</span></div>
-        <div class="mic-indicator" id="mic-indicator">● DR. DALEY IS <span id="mode-text">CONNECTING</span><span class="blink">_</span></div>
+        <div class="mic-indicator" id="mic-indicator">* DR. DALEY IS <span id="mode-text">CONNECTING</span><span class="blink">_</span></div>
 
         <button class="btn-primary" id="begin-btn">[ BEGIN ASSESSMENT ]</button>
         <button class="btn-end" id="end-btn">[ END CALL ]</button>
@@ -374,41 +466,40 @@
     </div>
   </div>
 
-  <!-- METHODOLOGY -->
-  <div class="call-box" style="margin-bottom: 3rem; background: var(--blue-light);">
-    <span class="call-box-label" style="background: var(--blue-light);">// WHAT THIS IS BASED ON</span>
-    <div class="section-heading" style="margin-bottom: 1.5rem;">This is credible af.</div>
+  <!-- ASCII ARROW -->
+  <div class="ascii-arrow">     |
+     |
+     V</div>
 
-    <div class="step">
-      <span class="step-num">01</span>
-      <span><strong>The Cattell-Horn-Carroll (CHC) framework</strong> — the most comprehensively validated psychometric model of human cognitive ability, used by clinical and educational psychologists worldwide. Your six scores map directly to CHC cognitive strata: fluid intelligence (Gf), crystallised intelligence (Gc), working memory capacity (Gwm), and retrieval fluency (Gr).</span>
+  <!-- METHODOLOGY -->
+  <div class="method-box">
+    <span class="method-box-label">// WHAT THIS IS BASED ON</span>
+
+    <div class="method-item">
+      <strong>01 // THE CHC FRAMEWORK</strong>
+      In psychometrics - the scientific study of cognitive ability - there is one framework that everything else is built on. The Cattell-Horn-Carroll model. It is what modern IQ tests use. It is what educational psychologists use when they assess children. It breaks human cognitive ability into measurable strata: fluid intelligence, crystallised intelligence, working memory capacity, retrieval fluency.<br><br>Your six scores map directly onto those strata. When Dr. Daley asks you a question, she is not winging it.
     </div>
-    <div class="step">
-      <span class="step-num">02</span>
-      <span><strong>Peer-reviewed research on AI and cognitive atrophy</strong> — including: Kosmyna et al. (2025) on 55% lower cognitive engagement during AI-assisted tasks; Fan et al. (2025) on metacognitive laziness and the erosion of epistemic self-awareness; Doshi &amp; Hauser (2024) on measurable reductions in creative novelty in AI-assisted groups; Gloria Mark's attention research showing average sustained focus has declined to 47 seconds; and Sparrow et al.'s foundational work on the Google Effect and transactive memory.</span>
+
+    <div class="method-item">
+      <strong>02 // THE RESEARCH</strong>
+      There is a growing body of peer-reviewed evidence that habitual AI use is changing how people think. Not in a vague, op-ed, "what does this mean for society" way. In a measurable, specific, this-is-happening-in-your-brain way.<br><br>Kosmyna et al. (2025): cognitive engagement 55% lower during AI-assisted tasks. Fan et al. (2025): metacognitive laziness - the gradual erosion of the impulse to notice whether you are actually thinking. Doshi and Hauser (2024): significant reduction in creative novelty in AI-assisted groups. Gloria Mark: average sustained focus now 47 seconds. Sparrow et al.: the Google Effect - the documented tendency to stop retaining information you know you can retrieve later.
     </div>
-    <div class="step">
-      <span class="step-num">03</span>
-      <span><strong>Conversational cognitive assessment methodology</strong> — designed so that competencies reveal themselves through natural speech patterns rather than self-report. You cannot perform your way through a working memory task. You cannot fake fluid reasoning under real-time pressure. The format is intentional.</span>
-    </div>
-    <div class="step" style="border-bottom: none;">
-      <span class="step-num" style="color: var(--text);">04</span>
-      <span><strong>Common fucking sense.</strong> If you've noticed your attention span has shortened, your recall has got worse, and you reach for a chatbot before you reach for your own brain — you already know something is happening. We just measure it. We spoke to your mum. She agrees.</span>
+
+    <div class="method-item">
+      <strong>03 // CONVERSATIONAL ASSESSMENT</strong>
+      The reason this is a phone call and not a form is that self-report is useless. If you ask someone whether they have a good memory, they will tell you what they believe, which is not the same as what is true.<br><br>Cognitive competencies reveal themselves in how people speak under light pressure - in real time, unrehearsed, with nowhere to hide. You cannot perform your way through a working memory task. You cannot fake fluid reasoning when someone is waiting for your answer.
     </div>
   </div>
 
-  <br>
-
   <!-- DISCLAIMER -->
   <p class="disclaimer">
-    Your results are not medical advice.<br><br>
-    <span style="color: #bbb; font-size: 0.65rem;">BRAD // BRAIN ROT ASSESSMENT DIVISION // REGISTERED WITH NOBODY IN PARTICULAR</span>
+    Dr. Axon Daley is not your doctor and this is not a clinical diagnosis.<br><br>
+    <span style="color: #bbb; font-size: 0.65rem;">BRAIN ROT ASSESSMENT DIVISION // DR. A. DALEY // EST. 2026</span>
   </p>
 
 </div>
 
 <script>
-  // Vibe check — purely decorative
   function pick(el) {
     const group = el.closest('.vibe-options');
     group.querySelectorAll('.vibe-opt').forEach(b => b.classList.remove('selected'));
@@ -449,20 +540,20 @@
 
         onConnect: ({ conversationId: cid }) => {
           conversationId = cid;
-          statusLine.textContent = '[CONNECTED — CALL IN PROGRESS]';
+          statusLine.textContent = '[CONNECTED - CALL IN PROGRESS]';
           beginBtn.style.display = 'none';
           endBtn.style.display = 'block';
           micIndicator.style.display = 'block';
         },
 
         onDisconnect: () => {
-          statusLine.textContent = '[CALL ENDED — PROCESSING RESULTS...]';
+          statusLine.textContent = '[CALL ENDED - PROCESSING RESULTS...]';
           endBtn.style.display = 'none';
           micIndicator.style.display = 'none';
           if (conversationId) {
             window.location.href = `/results/${conversationId}`;
           } else {
-            statusLine.textContent = '[ERROR: NO SESSION — REFRESH AND TRY AGAIN]';
+            statusLine.textContent = '[ERROR: NO SESSION - REFRESH AND TRY AGAIN]';
             beginBtn.style.display = 'block';
             beginBtn.disabled = false;
           }
@@ -489,7 +580,7 @@
 
     } catch (e) {
       console.error(e);
-      statusLine.textContent = '[FAILED TO START — CHECK CONSOLE]';
+      statusLine.textContent = '[FAILED TO START - CHECK CONSOLE]';
       beginBtn.disabled = false;
     }
   });
