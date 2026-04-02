@@ -59,44 +59,19 @@ def scrape_linkedin(url: str) -> str:
     return "\n".join(lines)
 
 
-def get_signed_url_with_context(context: str) -> str:
-    """Get ElevenLabs signed URL with LinkedIn context injected into system prompt."""
-    prompt = SYSTEM_PROMPT_BASE.replace(
-        "No additional user context. Proceed cold.",
-        context
-    )
-    resp = requests.post(
-        "https://api.elevenlabs.io/v1/convai/conversation/get_signed_url",
-        headers={"xi-api-key": ELEVENLABS_API_KEY, "Content-Type": "application/json"},
-        json={
-            "agent_id": ELEVENLABS_AGENT_ID,
-            "conversation_config_override": {
-                "agent": {"prompt": {"prompt": prompt}}
-            },
-        },
-        timeout=15,
-    )
-    resp.raise_for_status()
-    return resp.json()["signed_url"]
 
-
-@app.route("/start-call", methods=["POST"])
-def start_call():
-    """Optionally scrape LinkedIn, then return signed URL or agent ID."""
-    data = request.json or {}
-    linkedin_url = data.get("linkedin_url", "").strip()
-
-    if linkedin_url and RAPIDAPI_KEY:
-        try:
-            context = scrape_linkedin(linkedin_url)
-            if context:
-                signed_url = get_signed_url_with_context(context)
-                return jsonify({"signed_url": signed_url})
-        except Exception as e:
-            print(f"[start-call] LinkedIn/ElevenLabs error: {e}")
-
-    # Fallback: no LinkedIn or scrape failed — plain agent ID
-    return jsonify({"agent_id": ELEVENLABS_AGENT_ID})
+@app.route("/get-profile")
+def get_profile():
+    """Called by Dr. Daley via ElevenLabs tool to fetch LinkedIn profile."""
+    linkedin_url = request.args.get("linkedin_url", "").strip()
+    if not linkedin_url or not RAPIDAPI_KEY:
+        return jsonify({"context": "No profile available. Proceed cold."})
+    try:
+        context = scrape_linkedin(linkedin_url)
+        return jsonify({"context": context or "No profile available. Proceed cold."})
+    except Exception as e:
+        print(f"[get-profile] Error: {e}")
+        return jsonify({"context": "No profile available. Proceed cold."})
 
 
 # In-memory session store: conversation_id → {status, report}
