@@ -178,6 +178,11 @@
         <div class="pre-text dim">Dr. Daley is reviewing your responses.<br>This takes approximately 10 seconds.</div>
         <br>
         <div class="pre-text amber">Do not refresh. Do not Google anything.<span class="blink">_</span></div>
+        <br>
+        <div id="escape-hatch" style="display:none; margin-top: 1rem;">
+          <div class="pre-text dim" style="margin-bottom:0.75rem;">Taking longer than expected.<br>The call may not have completed.</div>
+          <a href="/"><button class="btn">[ BACK TO BRAD ]</button></a>
+        </div>
       </div>
     </div>
 
@@ -189,6 +194,11 @@
         el.textContent = chars[i % 4] + ' FILING RESULTS...';
         i++;
       }, 200);
+
+      // Show escape hatch after 15 seconds if still waiting
+      setTimeout(() => {
+        document.getElementById('escape-hatch').style.display = 'block';
+      }, 15000);
 
       function poll() {
         fetch('/status/{{ conversation_id }}')

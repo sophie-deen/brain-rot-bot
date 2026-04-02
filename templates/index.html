@@ -229,7 +229,10 @@
       line-height: 1.4;
       color: var(--text);
       flex-shrink: 0;
+      transition: color 0.3s;
     }
+
+    .phone-art.active { color: var(--blue); }
 
     .call-text { flex: 1; }
 
@@ -239,6 +242,75 @@
       color: var(--text);
       margin-bottom: 1rem;
     }
+
+    /* ── CALL STATUS DISPLAY ── */
+    .call-status-block {
+      margin-bottom: 1rem;
+    }
+
+    .call-status-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--dim);
+      margin-bottom: 0.5rem;
+    }
+
+    .call-status-label.live { color: var(--blue); }
+
+    .call-status-text {
+      font-size: 0.9rem;
+      font-weight: bold;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+      min-height: 1.4rem;
+    }
+
+    /* ── WAVEFORM ── */
+    .waveform {
+      display: none;
+      gap: 3px;
+      align-items: center;
+      height: 28px;
+      margin-bottom: 0.75rem;
+    }
+
+    .waveform.visible { display: flex; }
+
+    .wave-bar {
+      width: 4px;
+      border-radius: 2px;
+      background: var(--blue);
+      animation: wave 0.6s ease-in-out infinite;
+    }
+
+    .waveform.listening .wave-bar { background: var(--text); }
+
+    .wave-bar:nth-child(1)  { animation-delay: 0s;    height: 6px; }
+    .wave-bar:nth-child(2)  { animation-delay: 0.08s; height: 14px; }
+    .wave-bar:nth-child(3)  { animation-delay: 0.16s; height: 20px; }
+    .wave-bar:nth-child(4)  { animation-delay: 0.24s; height: 24px; }
+    .wave-bar:nth-child(5)  { animation-delay: 0.32s; height: 28px; }
+    .wave-bar:nth-child(6)  { animation-delay: 0.40s; height: 24px; }
+    .wave-bar:nth-child(7)  { animation-delay: 0.48s; height: 20px; }
+    .wave-bar:nth-child(8)  { animation-delay: 0.56s; height: 14px; }
+    .wave-bar:nth-child(9)  { animation-delay: 0.64s; height: 8px; }
+    .wave-bar:nth-child(10) { animation-delay: 0.72s; height: 4px; }
+
+    @keyframes wave {
+      0%, 100% { transform: scaleY(0.4); opacity: 0.5; }
+      50%       { transform: scaleY(1);   opacity: 1; }
+    }
+
+    /* ── TIMER ── */
+    .call-timer {
+      font-size: 0.75rem;
+      color: var(--dim);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+      display: none;
+    }
+
+    .call-timer.visible { display: block; }
 
     /* ── BUTTON ── */
     .btn-primary {
@@ -355,11 +427,38 @@
       line-height: 1.6;
     }
 
+    /* ── NAV ── */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: flex-end;
+      padding: 0.75rem 1.5rem;
+      background: var(--bg);
+      border-bottom: 1px solid #eee;
+      z-index: 100;
+    }
+
+    .nav a {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    .nav a:hover { text-decoration: underline; }
+
+    body { padding-top: 3rem; }
+
     .blink { animation: blink 1s step-end infinite; }
     @keyframes blink { 50% { opacity: 0; } }
   </style>
 </head>
 <body>
+<nav class="nav"><a href="/">// HOME</a></nav>
 <div class="page">
 
   <!-- HERO -->
@@ -439,8 +538,20 @@
     <div class="box-divider">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</div>
 
     <span class="call-label">// INITIATE ASSESSMENT</span>
+
+    <div style="margin-bottom: 1.25rem;">
+      <label style="font-size:0.65rem; letter-spacing:0.2em; color:var(--blue); display:block; margin-bottom:0.4rem;">// OPTIONAL — LINKEDIN URL</label>
+      <div style="display:flex; gap:0.5rem; margin-bottom:0.4rem;">
+        <input type="url" id="linkedin-url"
+          placeholder="https://linkedin.com/in/yourprofile"
+          style="flex:1; font-family:'Courier New',Courier,monospace; font-size:0.82rem; padding:0.5rem 0.75rem; border:1px solid #ccc; background:white; color:var(--text); letter-spacing:0.02em; outline:none;" />
+        <button onclick="confirmLinkedIn()" style="font-family:'Courier New',Courier,monospace; font-size:0.75rem; padding:0.5rem 0.75rem; background:transparent; border:1px solid var(--text); color:var(--text); cursor:pointer; letter-spacing:0.05em; white-space:nowrap;">[ LOAD ]</button>
+      </div>
+      <div id="linkedin-status" style="font-size:0.65rem; color:var(--dim); letter-spacing:0.05em;">Dr. Daley will have read your profile before the call.</div>
+    </div>
+
     <div class="call-inner">
-      <div class="phone-art"> _________
+      <div class="phone-art" id="phone-art"> _________
 |  _   _  |
 | | |_| | |
 | |     | |
@@ -454,13 +565,27 @@
 |    0    |
 |_________|</div>
       <div class="call-text">
-        <p>Dr. Daley is standing by.</p>
-
-        <div id="status-line">[READY]<span class="blink">_</span></div>
-        <div class="mic-indicator" id="mic-indicator">* DR. DALEY IS <span id="mode-text">CONNECTING</span><span class="blink">_</span></div>
+        <div class="call-status-block">
+          <div class="call-status-label" id="call-status-label">STATUS</div>
+          <div class="call-status-text" id="call-status-text">Dr. Daley is standing by.<span class="blink">_</span></div>
+          <div class="waveform" id="waveform">
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+          </div>
+          <div class="call-timer" id="call-timer">00:00</div>
+        </div>
 
         <button class="btn-primary" id="begin-btn">[ BEGIN ASSESSMENT ]</button>
         <button class="btn-end" id="end-btn">[ END CALL ]</button>
+        <button class="btn-end" id="reset-btn" style="display:none; border-color:#c00; color:#c00;" onclick="window.location.reload()">[ BACK TO BRAD ]</button>
       </div>
     </div>
   </div>
@@ -504,82 +629,156 @@
     group.querySelectorAll('.vibe-opt').forEach(b => b.classList.remove('selected'));
     el.classList.add('selected');
   }
+
+  function confirmLinkedIn() {
+    const url = document.getElementById('linkedin-url').value.trim();
+    const status = document.getElementById('linkedin-status');
+    if (url && url.includes('linkedin.com/in/')) {
+      status.textContent = '// PROFILE QUEUED — Dr. Daley will have read it before the call.';
+      status.style.color = 'var(--blue)';
+    } else if (url) {
+      status.textContent = 'Needs to be a linkedin.com/in/ profile URL.';
+      status.style.color = '#c00';
+    } else {
+      status.textContent = 'No URL entered — proceeding cold.';
+      status.style.color = 'var(--dim)';
+    }
+  }
 </script>
 
 <script type="module">
   import { Conversation } from 'https://esm.sh/@11labs/client';
 
   const AGENT_ID = "{{ agent_id }}";
-  const beginBtn = document.getElementById('begin-btn');
-  const endBtn = document.getElementById('end-btn');
-  const statusLine = document.getElementById('status-line');
-  const micIndicator = document.getElementById('mic-indicator');
-  const modeText = document.getElementById('mode-text');
+  const beginBtn    = document.getElementById('begin-btn');
+  const endBtn      = document.getElementById('end-btn');
+  const statusLabel = document.getElementById('call-status-label');
+  const statusText  = document.getElementById('call-status-text');
+  const waveform    = document.getElementById('waveform');
+  const timerEl     = document.getElementById('call-timer');
+  const phoneArt    = document.getElementById('phone-art');
+  const linkedinInput = document.getElementById('linkedin-url');
 
   let conversation = null;
   let conversationId = null;
+  let timerInterval = null;
+  let seconds = 0;
+  const resetBtn = document.getElementById('reset-btn');
+
+  function setStatus(label, text, blink = false) {
+    statusLabel.textContent = label;
+    statusText.innerHTML = text + (blink ? '<span class="blink">_</span>' : '');
+  }
+
+  function startTimer() {
+    seconds = 0;
+    timerEl.classList.add('visible');
+    timerInterval = setInterval(() => {
+      seconds++;
+      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const s = String(seconds % 60).padStart(2, '0');
+      timerEl.textContent = m + ':' + s;
+    }, 1000);
+  }
+
+  function stopTimer() {
+    clearInterval(timerInterval);
+    timerEl.classList.remove('visible');
+  }
 
   beginBtn.addEventListener('click', async () => {
     beginBtn.disabled = true;
-    statusLine.innerHTML = '[REQUESTING MICROPHONE ACCESS...]';
+    setStatus('STATUS', 'Requesting microphone access', true);
 
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (e) {
-      statusLine.textContent = '[ERROR: MICROPHONE ACCESS DENIED]';
+      setStatus('ERROR', '[MICROPHONE ACCESS DENIED]');
       beginBtn.disabled = false;
       return;
     }
 
-    statusLine.textContent = '[CONNECTING TO DR. DALEY...]';
+    // Resolve agent ID or signed URL (with LinkedIn context if provided)
+    const linkedinUrl = linkedinInput ? linkedinInput.value.trim() : '';
+    let sessionConfig = { agentId: AGENT_ID };
+
+    if (linkedinUrl) {
+      setStatus('STATUS', 'Fetching your file', true);
+      try {
+        const resp = await fetch('/start-call', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ linkedin_url: linkedinUrl }),
+        });
+        const data = await resp.json();
+        if (data.signed_url) {
+          sessionConfig = { signedUrl: data.signed_url };
+        }
+      } catch (e) {
+        console.warn('start-call failed, proceeding without LinkedIn context:', e);
+      }
+    }
+
+    setStatus('STATUS', 'Connecting to Dr. Daley', true);
 
     try {
       conversation = await Conversation.startSession({
-        agentId: AGENT_ID,
+        ...sessionConfig,
 
         onConnect: ({ conversationId: cid }) => {
           conversationId = cid;
-          statusLine.textContent = '[CONNECTED - CALL IN PROGRESS]';
+          statusLabel.textContent = 'LIVE';
+          statusLabel.classList.add('live');
+          setStatus('LIVE', 'Dr. Daley is on the line');
+          phoneArt.classList.add('active');
           beginBtn.style.display = 'none';
           endBtn.style.display = 'block';
-          micIndicator.style.display = 'block';
+          waveform.classList.add('visible');
+          startTimer();
         },
 
         onDisconnect: () => {
-          statusLine.textContent = '[CALL ENDED - PROCESSING RESULTS...]';
+          stopTimer();
+          waveform.classList.remove('visible');
+          phoneArt.classList.remove('active');
+          statusLabel.classList.remove('live');
+          statusLabel.textContent = 'STATUS';
           endBtn.style.display = 'none';
-          micIndicator.style.display = 'none';
           if (conversationId) {
-            window.location.href = `/results/${conversationId}`;
+            setStatus('STATUS', 'Filing results — please wait', true);
+            setTimeout(() => { window.location.href = `/results/${conversationId}`; }, 1500);
           } else {
-            statusLine.textContent = '[ERROR: NO SESSION - REFRESH AND TRY AGAIN]';
-            beginBtn.style.display = 'block';
-            beginBtn.disabled = false;
+            setStatus('ERROR', '[NO SESSION ID — CALL MAY NOT HAVE CONNECTED]');
+            resetBtn.style.display = 'block';
           }
         },
 
         onModeChange: ({ mode }) => {
           if (mode.mode === 'speaking') {
-            modeText.textContent = 'SPEAKING';
-            micIndicator.className = 'mic-indicator speaking';
+            setStatus('LIVE', 'Dr. Daley is speaking');
+            waveform.classList.remove('listening');
           } else {
-            modeText.textContent = 'LISTENING';
-            micIndicator.className = 'mic-indicator listening';
+            setStatus('LIVE', 'Listening');
+            waveform.classList.add('listening');
           }
         },
 
         onError: (error) => {
           console.error('ElevenLabs error:', error);
-          statusLine.textContent = '[ERROR: ' + (error.message || 'CONNECTION FAILED') + ']';
-          beginBtn.style.display = 'block';
-          beginBtn.disabled = false;
+          setStatus('ERROR', error.message || 'Connection failed');
+          beginBtn.style.display = 'none';
           endBtn.style.display = 'none';
+          resetBtn.style.display = 'block';
+          waveform.classList.remove('visible');
+          phoneArt.classList.remove('active');
+          statusLabel.classList.remove('live');
+          stopTimer();
         },
       });
 
     } catch (e) {
       console.error(e);
-      statusLine.textContent = '[FAILED TO START - CHECK CONSOLE]';
+      setStatus('ERROR', '[Failed to start - check console]');
       beginBtn.disabled = false;
     }
   });

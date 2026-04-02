@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from datetime import datetime
 
 import requests
@@ -14,6 +15,89 @@ app = Flask(__name__)
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY")
 ELEVENLABS_AGENT_ID = os.environ.get("ELEVENLABS_AGENT_ID", "agent_4301kn6yvgkpfn6s6rpe2m3xgbj2")
+RAPIDAPI_KEY = os.environ.get("RAPIDAPI_KEY")
+
+def _load_system_prompt():
+    try:
+        path = os.path.join(os.path.dirname(__file__), "dr-daley-system-prompt-v1.4.md")
+        with open(path) as f:
+            content = f.read()
+        match = re.search(r'```\n(.*?)```', content, re.DOTALL)
+        return match.group(1).strip() if match else ""
+    except Exception:
+        return ""
+
+SYSTEM_PROMPT_BASE = _load_system_prompt()
+
+
+def scrape_linkedin(url: str) -> str:
+    """Fetch LinkedIn profile via RapidAPI Real-Time LinkedIn Scraper."""
+    resp = requests.get(
+        "https://linkedin-api8.p.rapidapi.com/get-profile-data-by-url",
+        headers={
+            "X-RapidAPI-Key": RAPIDAPI_KEY,
+            "X-RapidAPI-Host": "linkedin-api8.p.rapidapi.com",
+        },
+        params={"url": url},
+        timeout=20,
+    )
+    resp.raise_for_status()
+    p = resp.json()
+    lines = []
+    name = " ".join(filter(None, [p.get("firstName"), p.get("lastName")]))
+    if name:
+        lines.append(f"Name: {name}")
+    if p.get("headline"):
+        lines.append(f"Headline: {p['headline']}")
+    for exp in (p.get("experience") or [])[:3]:
+        title = exp.get("title", "")
+        company = exp.get("company", "")
+        if title or company:
+            lines.append(f"Role: {title} at {company}")
+    if p.get("summary"):
+        lines.append(f"Summary: {p['summary'][:400]}")
+    return "\n".join(lines)
+
+
+def get_signed_url_with_context(context: str) -> str:
+    """Get ElevenLabs signed URL with LinkedIn context injected into system prompt."""
+    prompt = SYSTEM_PROMPT_BASE.replace(
+        "No additional user context. Proceed cold.",
+        context
+    )
+    resp = requests.post(
+        "https://api.elevenlabs.io/v1/convai/conversation/get_signed_url",
+        headers={"xi-api-key": ELEVENLABS_API_KEY, "Content-Type": "application/json"},
+        json={
+            "agent_id": ELEVENLABS_AGENT_ID,
+            "conversation_config_override": {
+                "agent": {"prompt": {"prompt": prompt}}
+            },
+        },
+        timeout=15,
+    )
+    resp.raise_for_status()
+    return resp.json()["signed_url"]
+
+
+@app.route("/start-call", methods=["POST"])
+def start_call():
+    """Optionally scrape LinkedIn, then return signed URL or agent ID."""
+    data = request.json or {}
+    linkedin_url = data.get("linkedin_url", "").strip()
+
+    if linkedin_url and RAPIDAPI_KEY:
+        try:
+            context = scrape_linkedin(linkedin_url)
+            if context:
+                signed_url = get_signed_url_with_context(context)
+                return jsonify({"signed_url": signed_url})
+        except Exception as e:
+            print(f"[start-call] LinkedIn/ElevenLabs error: {e}")
+
+    # Fallback: no LinkedIn or scrape failed — plain agent ID
+    return jsonify({"agent_id": ELEVENLABS_AGENT_ID})
+
 
 # In-memory session store: conversation_id → {status, report}
 sessions = {}
@@ -281,10 +365,20 @@ def fetch_and_score(conversation_id: str):
             headers={"xi-api-key": ELEVENLABS_API_KEY},
             timeout=10,
         )
+        print(f"[ElevenLabs] {conversation_id} -> HTTP {resp.status_code}")
         if resp.status_code != 200:
+            print(f"[ElevenLabs] Error body: {resp.text[:300]}")
             return
         data = resp.json()
-        if data.get("status") != "done":
+        el_status = data.get("status")
+        transcript = data.get("transcript", [])
+        print(f"[ElevenLabs] status={el_status}, transcript_len={len(transcript)}")
+        if el_status == "processing":
+            return  # not ready yet, keep polling
+        if len(transcript) < 2:
+            sessions[conversation_id] = {"status": "error", "error": "Call ended too early — nothing to score."}
+            return
+        if el_status not in ("done", "failed"):
             return
         transcript_text = extract_transcript(data)
         if not transcript_text.strip():
