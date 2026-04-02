@@ -698,12 +698,21 @@
       return;
     }
 
-    // Pass LinkedIn URL as dynamic variable — Dr. Daley fetches profile via tool
+    // Get signed URL from backend (with linkedin_url dynamic variable if provided)
     const linkedinUrl = linkedinInput ? linkedinInput.value.trim() : '';
-    const sessionConfig = {
-      agentId: AGENT_ID,
-      ...(linkedinUrl && { dynamicVariables: { linkedin_url: linkedinUrl } }),
-    };
+    setStatus('STATUS', 'Connecting to Dr. Daley', true);
+    let sessionConfig = { agentId: AGENT_ID };
+    try {
+      const resp = await fetch('/start-call', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ linkedin_url: linkedinUrl }),
+      });
+      const data = await resp.json();
+      if (data.signed_url) sessionConfig = { signedUrl: data.signed_url };
+    } catch (e) {
+      console.warn('start-call failed, using agent ID directly:', e);
+    }
 
     setStatus('STATUS', 'Connecting to Dr. Daley', true);
 

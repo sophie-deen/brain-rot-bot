@@ -74,6 +74,29 @@ def get_profile():
         return jsonify({"context": "No profile available. Proceed cold."})
 
 
+@app.route("/start-call", methods=["POST"])
+def start_call():
+    """Get ElevenLabs signed URL with linkedin_url dynamic variable baked in."""
+    data = request.json or {}
+    linkedin_url = data.get("linkedin_url", "").strip()
+
+    try:
+        body = {"agent_id": ELEVENLABS_AGENT_ID}
+        if linkedin_url:
+            body["dynamic_variables"] = {"linkedin_url": linkedin_url}
+        resp = requests.post(
+            "https://api.elevenlabs.io/v1/convai/conversation/get_signed_url",
+            headers={"xi-api-key": ELEVENLABS_API_KEY, "Content-Type": "application/json"},
+            json=body,
+            timeout=15,
+        )
+        resp.raise_for_status()
+        return jsonify({"signed_url": resp.json()["signed_url"]})
+    except Exception as e:
+        print(f"[start-call] Error: {e}")
+        return jsonify({"agent_id": ELEVENLABS_AGENT_ID})
+
+
 # In-memory session store: conversation_id → {status, report}
 sessions = {}
 
