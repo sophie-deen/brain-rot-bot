@@ -2,6 +2,7 @@ import json
 import os
 from datetime import datetime
 
+import requests
 from anthropic import Anthropic
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
@@ -11,6 +12,7 @@ load_dotenv()
 app = Flask(__name__)
 
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
+ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY")
 ELEVENLABS_AGENT_ID = os.environ.get("ELEVENLABS_AGENT_ID", "agent_4301kn6yvgkpfn6s6rpe2m3xgbj2")
 
 # In-memory session store: conversation_id → {status, report}
@@ -271,9 +273,37 @@ def results(conversation_id):
     )
 
 
+def fetch_and_score(conversation_id: str):
+    """Fetch transcript from ElevenLabs API and score it. Stores result in sessions."""
+    try:
+        resp = requests.get(
+            f"https://api.elevenlabs.io/v1/convai/conversations/{conversation_id}",
+            headers={"xi-api-key": ELEVENLABS_API_KEY},
+            timeout=10,
+        )
+        if resp.status_code != 200:
+            return
+        data = resp.json()
+        if data.get("status") != "done":
+            return
+        transcript_text = extract_transcript(data)
+        if not transcript_text.strip():
+            sessions[conversation_id] = {"status": "error", "error": "Empty transcript"}
+            return
+        report = score_transcript(transcript_text)
+        report["date"] = datetime.now().strftime("%d.%m.%Y")
+        report["bars"] = {k: render_bar(v) for k, v in report["scores"].items()}
+        sessions[conversation_id] = {"status": "ready", "report": report}
+    except Exception as e:
+        sessions[conversation_id] = {"status": "error", "error": str(e)}
+
+
 @app.route("/status/<conversation_id>")
 def status(conversation_id):
     session = sessions.get(conversation_id)
+    if not session:
+        fetch_and_score(conversation_id)
+        session = sessions.get(conversation_id)
     if not session:
         return jsonify({"status": "waiting"})
     return jsonify({"status": session["status"]})
