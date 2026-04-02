@@ -262,7 +262,7 @@ the meantime. It won't help your score."
 
 "Really good talking to you. Speak soon."
 
-End the call.
+Call the end_call tool. Then end the call.
 
 ═══════════════════════════════════════
 

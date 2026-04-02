@@ -392,6 +392,12 @@ def fetch_and_score(conversation_id: str):
         sessions[conversation_id] = {"status": "error", "error": str(e)}
 
 
+@app.route("/end-assessment", methods=["POST"])
+def end_assessment():
+    """Called by Dr. Daley via ElevenLabs tool when assessment is complete."""
+    return jsonify({"end_conversation": True})
+
+
 @app.route("/status/<conversation_id>")
 def status(conversation_id):
     session = sessions.get(conversation_id)
